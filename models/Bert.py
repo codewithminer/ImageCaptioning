@@ -6,7 +6,7 @@ class BertModel:
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
         self.model = BertModel.from_pretrained('bert-base-uncased')
 
-    # Return Tensor with shape [N, 768] N: number of words
+    # Return Tensor with shape [N, 768] N: number of words.
     def get_word_vectors(self,labels):
         texts = labels
         print(texts)
