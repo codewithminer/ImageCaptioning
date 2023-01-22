@@ -1,6 +1,6 @@
 import pickle
 
-def getXEdgeIndex():
+def getSceneGraphData():
     objects = []
     with (open("Detected_Scene_Graphs_SUN397_1.pkl", "rb")) as f:
         objects.append(pickle.load(f))

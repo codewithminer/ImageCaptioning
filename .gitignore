@@ -1,2 +1,17 @@
 /ckpt
 /datasets
+/.venv
+
+RelTR/ckpt
+RelTR/datasets/images
+RelTR/images/*.jpg
+
+
+cocoapi/*.zip
+cocoapi/img
+cocoapi/PythonAPI/pycocotools/__init__.pyc
+cocoapi/PythonAPI/pycocotools/_mask.c
+cocoapi/PythonAPI/pycocotools/_mask.so
+cocoapi/PythonAPI/pycocotools/coco.pyc
+cocoapi/PythonAPI/pycocotools/cocoeval.pyc
+cocoapi/PythonAPI/pycocotools/mask.pyc
