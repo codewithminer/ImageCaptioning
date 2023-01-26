@@ -5,7 +5,7 @@ from torch.nn import Sequential as Seq, Linear, ReLU
 from torch_geometric.nn import MessagePassing, global_mean_pool
 from torch_geometric.utils import add_self_loops, degree
 from torch_geometric.nn import knn_graph
-from torch_geometric.nn import GCNConv, global_mean_pool, global_max_pool
+from torch_geometric.nn import global_mean_pool, global_max_pool
 
 class GCNConv(MessagePassing):
     def __init__(self, in_channels, out_channels):

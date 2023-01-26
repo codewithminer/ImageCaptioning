@@ -5,11 +5,11 @@ from layer.GCNLayer import GCNConv,EdgeConv, DynamicEdgeConv, GraphPooling
 class GCNModel(nn.Module):
     def __init__(self, in_channels, hidden_channels, out_channels, pooling_type, edge_in_channels):
         super(GCNModel, self).__init__()
-        self.edgeconv1 = DynamicEdgeConv(in_channels, hidden_channels, edge_in_channels)
-        self.edgeconv2 = DynamicEdgeConv(in_channels, hidden_channels, edge_in_channels)
-        self.gcn1 = GCNConv(in_channels, hidden_channels)
+        self.edgeconv1 = EdgeConv(in_channels, hidden_channels, edge_in_channels)
+        self.edgeconv2 = EdgeConv(hidden_channels, hidden_channels,edge_in_channels)
+        self.gcn1 = GCNConv(hidden_channels, hidden_channels)
         self.pooling = GraphPooling(pooling_type)
-        self.fc = nn.Linear(out_channels, 256)
+        self.fc = nn.Linear(hidden_channels, out_channels)
 
     def forward(self, data_list):
         x_list = [data.x for data in data_list]

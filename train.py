@@ -6,7 +6,10 @@ import pickle
 from utils.dataloader import getData
 from torchvision import transforms
 from utils.build_vocab import Vocabulary # import this, so you can load vocab.pkl file
-
+from utils.sg_dataloader import getSGData
+from models.Bert import Word2Vector
+from torch_geometric.data import Data
+from models.GCN import GCNModel
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -26,7 +29,7 @@ def main(args):
     # Load Vocabulary wrapper
     with open(args.vocab_path, 'rb') as f:
         vocab = pickle.load(f)
-
+    
     # Loading Data (images, captions, captions length, scene graph)
     data = getData(
         args.image_dir, args.caption_path, args.sg_path,
@@ -42,8 +45,11 @@ def main(args):
 
     # caption [128, 24] --> [1, 23, 17, ..., 2]
     for i,(image, caption, length, sg) in enumerate(data):
-        pass
-    
+        data =  getSGData(sg)
+        gcn_model = GCNModel(768, 1024, 256, 'mean', 768)
+        x = gcn_model(data)
+        print(x[0].shape)
+        break
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -51,7 +57,7 @@ if __name__ == '__main__':
     parser.add_argument('--crop_size', type=int, default=224, help='size for randomly cropping images')
     parser.add_argument('--vocab_path', type=str, default='datasets/vocab.pkl', help='path for vocabulary wrapper')
     parser.add_argument('--image_dir', type=str, default='datasets/images/resized2014/', help='direcotory for resized images')
-    parser.add_argument('--caption_path', type=str, default='datasets/annotations/caption_train2014.json', help='path for train annotation json file')
+    parser.add_argument('--caption_path', type=str, default='datasets/annotations/captions_train2014.json', help='path for train annotation json file')
     parser.add_argument('--sg_path', type=str, default='datasets/SG/Detected_Scene_Graph.json', help='path for train scene graph json file')
     parser.add_argument('--save_step', type=int, default=1000, help='step size for saving trained models')
 
