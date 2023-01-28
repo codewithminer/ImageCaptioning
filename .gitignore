@@ -5,6 +5,7 @@
 RelTR/ckpt
 RelTR/datasets/images
 RelTR/images/*.jpg
+RelTR/inference_copy.py
 
 cocoapi/*.zip
 cocoapi/img
@@ -16,4 +17,4 @@ cocoapi/PythonAPI/pycocotools/cocoeval.pyc
 cocoapi/PythonAPI/pycocotools/mask.pyc
 cocoapi/PythonAPI/demos
 
-/__pycache__
+__pycache__/
