@@ -11,7 +11,7 @@ class Word2Vector:
         texts = labels
         inputs = self.tokenizer(texts, return_tensors="pt", truncation=True, padding=True)
         outputs = self.model(**inputs)
-        word_vectors = outputs.pooler_output.detach().numpy()
+        word_vectors = outputs.pooler_output.detach()
         word_vectors = torch.Tensor(word_vectors)
         return word_vectors
 

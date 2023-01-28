@@ -3,7 +3,7 @@ import torch
 from torch_geometric.data import Data
 
 class SceneGraphLoader:
-    def __init__(self,scene_graph):
+    def __init__(self,scene_graph, bert,word2vec):
         self.sg = scene_graph
         self.nodeLabels = []
         self.edgeLabels = []
@@ -12,6 +12,8 @@ class SceneGraphLoader:
         self.edgeVec = []
         self.adjmat = []
         self.batch = []
+        self.bert = bert
+        self.w2v = word2vec
 
     def prepareSG(self):
         # extract nodes, edges and edge_index from scene graph
@@ -21,11 +23,10 @@ class SceneGraphLoader:
             self.edgeIndexs.append(torch.tensor(item['edges']))
 
         # Convert nodel labels and edge labels to vector (with Bert Model)
-        bert = Word2Vector()
         for nodes in self.nodeLabels:
-            self.nodeVec.append(bert.get_word_vectors(nodes))
+            self.nodeVec.append(self.bert.get_word_vectors(nodes))
         for edges in self.edgeLabels:
-            self.edgeVec.append(bert.get_word_vectors(edges))
+            self.edgeVec.append(self.bert.get_word_vectors(edges))
 
         # get batches for pooling graph vectors
         for i,graph in enumerate(self.sg):
@@ -61,8 +62,8 @@ class SceneGraphLoader:
         return len(self.nodeLabels)
 
 
-def getSGData(sg):
-    scene_graph = SceneGraphLoader(sg)
+def getSGData(sg, bert,word2vec):
+    scene_graph = SceneGraphLoader(sg, bert,word2vec)
     scene_graph.prepareSG()
     # scene_graph.adjacencyMatrix()
     return scene_graph.loadData()

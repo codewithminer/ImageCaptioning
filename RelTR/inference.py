@@ -136,7 +136,7 @@ def main(args):
     model.load_state_dict(ckpt['model'])
     model.eval()
     
-    dataset_path = 'datasets/images/train2014'
+    dataset_path = 'datasets/images/resized2014'
     IMAGE_PATHS = []
     #for folder_name in os.listdir(dataset_path):
     #    for filename in glob.iglob(os.path.join(dataset_path, folder_name, '*.jpg'), recursive=True):
@@ -151,7 +151,7 @@ def main(args):
     img_obj_not_found = []
     img_not_rgb = []
     scene_graphs = dict()
-    for img_path in IMAGE_PATHS[5000:]:
+    for img_path in IMAGE_PATHS:
         im = Image.open(img_path)
       
         # mean-std normalize the input image (batch-size: 1)

@@ -95,6 +95,21 @@ class GraphPooling(nn.Module):
             raise ValueError('Invalid pooling type')
         return x
 
+class GraphPooling2(nn.Module):
+    def __init__(self, pooling_type):
+        super(GraphPooling2, self).__init__()
+        self.pooling_type = pooling_type
+
+    def forward(self, x, adj):
+        if self.pooling_type == 'sum':
+            x = torch.spmm(adj, x)
+            x = torch.sum(x, dim=1)
+        elif self.pooling_type == 'mean':
+            x = torch.spmm(adj, x)
+            x = torch.mean(x, dim=1)
+        else:
+            raise ValueError('Invalid pooling type')
+        return x
 # import math
 # import torch
 # from torch.nn.parameter import Parameter

@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from layer.GCNLayer import GCNConv,EdgeConv, DynamicEdgeConv, GraphPooling
-
+from torch.nn.utils.rnn import pad_sequence
 class GCNModel(nn.Module):
     def __init__(self, in_channels, hidden_channels, out_channels, pooling_type, edge_in_channels):
         super(GCNModel, self).__init__()
@@ -20,9 +20,16 @@ class GCNModel(nn.Module):
         x_list = [self.edgeconv1(x, edge_index, edge_attr) for x,edge_index,edge_attr in zip(x_list,edge_index_list,edge_attr_list)]
         x_list = [self.edgeconv2(x, edge_index, edge_attr) for x,edge_index,edge_attr in zip(x_list,edge_index_list,edge_attr_list)]
         x_list = [self.gcn1(x, edge_index) for x,edge_index in zip(x_list,edge_index_list)]
-        x_list = [self.pooling(x, edge_index, batch) for x,edge_index,batch in zip(x_list,edge_index_list,batch_list)]
+        x_list = [self.pooling(x, edge_index, None) for x,edge_index,batch in zip(x_list,edge_index_list,batch_list)]
         x_list = [self.fc(x) for x in x_list]
-        return x_list
+        return  torch.stack(x_list)
+
+    # def forward(self, x, e, e_i, b):
+    #     x = self.edgeconv1(x,e_i,e)
+    #     x = self.edgeconv2(x,e_i,e)
+    #     x = self.gcn1(x,e_i,)
+    #     x = self.pooling(x,e_i,b)
+    #     x = self.fc(x)
 
 
 

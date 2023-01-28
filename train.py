@@ -1,5 +1,6 @@
 import argparse
 import torch
+import numpy as np
 import torch.nn as nn
 import os
 import pickle
@@ -7,9 +8,10 @@ from utils.dataloader import getData
 from torchvision import transforms
 from utils.build_vocab import Vocabulary # import this, so you can load vocab.pkl file
 from utils.sg_dataloader import getSGData
+from models.models import EncoderDecoder
+from torch.nn.utils.rnn import pack_padded_sequence, pad_sequence
 from models.Bert import Word2Vector
-from torch_geometric.data import Data
-from models.GCN import GCNModel
+from utils.dataholder import DataHolder
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -29,27 +31,70 @@ def main(args):
     # Load Vocabulary wrapper
     with open(args.vocab_path, 'rb') as f:
         vocab = pickle.load(f)
-    
+
     # Loading Data (images, captions, captions length, scene graph)
     data = getData(
         args.image_dir, args.caption_path, args.sg_path,
         vocab, transform, args.batch_size, shuffle=True, num_workers=args.num_workers)
 
-    # Build the models (GCN, Resnet, LSTM(combine vectors), LSTM(make caption))
-    
-
     # Loss and optimizer
     # Train the models
 
 
+    gcn_in_channels = 768
+    gcn_hidden_channels = 1024
+    gcn_out_channels = 256
+    gcn_pooling_type = 'mean'
+    gcn_edge_in_channels = 768
 
-    # caption [128, 24] --> [1, 23, 17, ..., 2]
-    for i,(image, caption, length, sg) in enumerate(data):
-        data =  getSGData(sg)
-        gcn_model = GCNModel(768, 1024, 256, 'mean', 768)
-        x = gcn_model(data)
-        print(x[0].shape)
-        break
+    resnet_embed_size = 256
+
+    encoder_lstm_embed_size = 256
+    encoder_lstm_hidden_size = 512
+    encoder_lstm_num_layers = 1
+
+    decoder_lstm_embed_size = 256
+    decoder_lstm_hidden_size = 512
+    decoder_lstm_vocab_size = len(vocab)
+    decoder_lstm_num_layers = 1
+    max_seq_length = 20
+
+    model = EncoderDecoder(
+                gcn_in_channels, gcn_hidden_channels, gcn_out_channels, gcn_pooling_type, gcn_edge_in_channels,
+                resnet_embed_size,
+                encoder_lstm_embed_size, encoder_lstm_hidden_size, encoder_lstm_num_layers,
+                decoder_lstm_embed_size, decoder_lstm_hidden_size, decoder_lstm_vocab_size, decoder_lstm_num_layers, max_seq_length
+            ).to(device)
+    bert = Word2Vector()
+    word2vec = DataHolder().word2vec
+    criterion = nn.CrossEntropyLoss()
+    # params = list(model.parameters())
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
+
+    total_step = len(data)
+    for epoch in range(args.num_epochs):
+        # caption [128, 24] --> [1, 23, 17, ..., 2]
+        for i,(images, captions, lengths, SGs) in enumerate(data):
+            SG_data =  getSGData(SGs,bert,word2vec)
+            print(i)
+            # images = images.to(device)
+            # captions = captions.to(device)
+            # targets = pack_padded_sequence(captions, lengths, batch_first=True)[0]
+            # outputs =  model(SG_data, images, captions, lengths)
+            # loss = criterion(outputs, targets)
+            # model.zero_grad()
+            # loss.backward()
+            # optimizer.step()
+
+            # # Print log info
+            # if i % args.log_step == 0:
+            #     print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Perplexity: {:5.4f}'
+            #           .format(epoch, args.num_epochs, i, total_step, loss.item(), np.exp(loss.item()))) 
+                
+            # # Save the model checkpoints
+            # if (i+1) % args.save_step == 0:
+            #     torch.save(model.state_dict(), os.path.join(
+                    # args.model_path, 'encoder-decoder-{}-{}.ckpt'.format(epoch+1, i+1)))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -59,6 +104,7 @@ if __name__ == '__main__':
     parser.add_argument('--image_dir', type=str, default='datasets/images/resized2014/', help='direcotory for resized images')
     parser.add_argument('--caption_path', type=str, default='datasets/annotations/captions_train2014.json', help='path for train annotation json file')
     parser.add_argument('--sg_path', type=str, default='datasets/SG/Detected_Scene_Graph.json', help='path for train scene graph json file')
+    parser.add_argument('--log_step', type=int , default=10, help='step size for prining log info')
     parser.add_argument('--save_step', type=int, default=1000, help='step size for saving trained models')
 
     # LSTM model parameters
