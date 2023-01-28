@@ -6,7 +6,6 @@ RelTR/ckpt
 RelTR/datasets/images
 RelTR/images/*.jpg
 
-
 cocoapi/*.zip
 cocoapi/img
 cocoapi/PythonAPI/pycocotools/__init__.pyc
