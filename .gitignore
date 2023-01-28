@@ -15,3 +15,5 @@ cocoapi/PythonAPI/pycocotools/coco.pyc
 cocoapi/PythonAPI/pycocotools/cocoeval.pyc
 cocoapi/PythonAPI/pycocotools/mask.pyc
 cocoapi/PythonAPI/demos
+
+/__pycache__
