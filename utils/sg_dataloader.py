@@ -13,7 +13,7 @@ class SceneGraphLoader:
         self.adjmat = []
         self.batch = []
         self.bert = bert
-        self.w2v = word2vec
+        self.word2vec = word2vec
 
     def prepareSG(self):
         # extract nodes, edges and edge_index from scene graph
@@ -24,9 +24,26 @@ class SceneGraphLoader:
 
         # Convert nodel labels and edge labels to vector (with Bert Model)
         for nodes in self.nodeLabels:
-            self.nodeVec.append(self.bert.get_word_vectors(nodes))
+            nodes_vec = torch.tensor([])  # to keep nodes vectors
+            for node in nodes:
+                if node in self.word2vec: # if node already have vector then append it to nodes_vec from word2vec
+                    nodes_vec = torch.cat((nodes_vec,self.word2vec[node]), dim=0) 
+                else:
+                    vector = self.bert.get_word_vectors(node)
+                    nodes_vec = torch.cat((nodes_vec, vector), dim=0) # append new vector(1,768) to nodes_vec
+                    self.word2vec[node] = vector
+            self.nodeVec.append(nodes_vec)
+
         for edges in self.edgeLabels:
-            self.edgeVec.append(self.bert.get_word_vectors(edges))
+            edges_vec = torch.tensor([])
+            for edge in edges:
+                if edge in self.word2vec:
+                    edges_vec = torch.cat((edges_vec,self.word2vec[edge]), dim=0)
+                else:
+                    vector = self.bert.get_word_vectors(edge)
+                    edges_vec = torch.cat((edges_vec, vector), dim=0)
+                    self.word2vec[edge] = vector
+            self.edgeVec.append(edges_vec)
 
         # get batches for pooling graph vectors
         for i,graph in enumerate(self.sg):

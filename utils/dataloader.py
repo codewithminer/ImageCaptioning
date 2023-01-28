@@ -38,7 +38,6 @@ class CocoDataset(data.Dataset):
     def getIdsHaveSG(self,ids):
         """Return annotations IDs that have generated scene graph"""
         sg_image_ids = list(self.sg.keys()) # ['coco2014_000123.jpg',...]
-
         anns_ids = []
         for id in ids:
             img_id = self.coco.anns[id]['image_id'] # 123

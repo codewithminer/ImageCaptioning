@@ -67,6 +67,7 @@ def main(args):
             ).to(device)
     bert = Word2Vector()
     word2vec = DataHolder().word2vec
+
     criterion = nn.CrossEntropyLoss()
     # params = list(model.parameters())
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
@@ -76,25 +77,24 @@ def main(args):
         # caption [128, 24] --> [1, 23, 17, ..., 2]
         for i,(images, captions, lengths, SGs) in enumerate(data):
             SG_data =  getSGData(SGs,bert,word2vec)
-            print(i)
-            # images = images.to(device)
-            # captions = captions.to(device)
-            # targets = pack_padded_sequence(captions, lengths, batch_first=True)[0]
-            # outputs =  model(SG_data, images, captions, lengths)
-            # loss = criterion(outputs, targets)
-            # model.zero_grad()
-            # loss.backward()
-            # optimizer.step()
+            images = images.to(device)
+            captions = captions.to(device)
+            targets = pack_padded_sequence(captions, lengths, batch_first=True)[0]
+            outputs =  model(SG_data, images, captions, lengths)
+            loss = criterion(outputs, targets)
+            model.zero_grad()
+            loss.backward()
+            optimizer.step()
 
-            # # Print log info
-            # if i % args.log_step == 0:
-            #     print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Perplexity: {:5.4f}'
-            #           .format(epoch, args.num_epochs, i, total_step, loss.item(), np.exp(loss.item()))) 
+            # Print log info
+            if i % args.log_step == 0:
+                print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Perplexity: {:5.4f}'
+                      .format(epoch, args.num_epochs, i, total_step, loss.item(), np.exp(loss.item()))) 
                 
-            # # Save the model checkpoints
-            # if (i+1) % args.save_step == 0:
-            #     torch.save(model.state_dict(), os.path.join(
-                    # args.model_path, 'encoder-decoder-{}-{}.ckpt'.format(epoch+1, i+1)))
+            # Save the model checkpoints
+            if (i+1) % args.save_step == 0:
+                torch.save(model.state_dict(), os.path.join(
+                    args.model_path, 'encoder-decoder-{}-{}.ckpt'.format(epoch+1, i+1)))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
