@@ -25,7 +25,7 @@ class CocoDataset(data.Dataset):
         self.img_dir = img_dir
         self.coco = COCO(ann_file)
         self.sg = self.getSceneGraphJson(sg)
-        self.ids = self.getIdsHaveSG(list(self.coco.anns.keys())[:2])
+        self.ids = self.getIdsHaveSG(list(self.coco.anns.keys()))
         self.vocab = vocab
         self.transform = transform
     

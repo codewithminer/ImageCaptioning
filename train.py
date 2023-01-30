@@ -38,9 +38,6 @@ def main(args):
         args.image_dir, args.caption_path, args.sg_path,
         vocab, transform, args.batch_size, shuffle=True, num_workers=args.num_workers)
 
-    # Loss and optimizer
-    # Train the models
-
 
     gcn_in_channels = 768
     gcn_hidden_channels = 1024

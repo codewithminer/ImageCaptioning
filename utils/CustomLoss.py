@@ -22,6 +22,7 @@ class BertDistancesLoss(nn.Module):
             for ind in index.tolist():
                 pred_words = self.vocab.idx2word[ind]
                 caption_sentence.append(pred_words)
+            caption_sentence = caption_sentence[1:-1] # remove <start> and <end>
             caption_sentence = ' '.join(caption_sentence)
             caption_list.append(caption_sentence)
             counter = counter+length
@@ -51,7 +52,6 @@ class BertDistancesLoss(nn.Module):
         for i,text in enumerate(caption_list):
             sentences.append(text)
             sentences.append(target_list[i])
-            print(sentences)
             # initialize dictionary that will contain tokenized sentences
             tokens = {'input_ids': [], 'attention_mask': []}
 
@@ -79,10 +79,9 @@ class BertDistancesLoss(nn.Module):
             cosine = 1 - cosine_similarity(
                 [mean_pooled[0]],
                 mean_pooled[1:]
-            )
+            )*100
             sentences = []
             cosine = torch.from_numpy(cosine).to('cuda:0')
             loss = torch.cat((loss, cosine), dim=0)
-            print(loss)
-        # mean tensor
+
         return loss.mean()
