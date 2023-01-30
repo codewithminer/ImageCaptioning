@@ -74,10 +74,27 @@ class DecoderLSTM(nn.Module):
         # features [128, 256]   features.unsqueeze(1)-> [128, 1, 256]
         embeddings = self.embed(captions)   # [128, 28, 256]
         embeddings = torch.cat((features.unsqueeze(1), embeddings), 1) # [128, 29, 256]
-        packed = pack_padded_sequence(embeddings, lengths, batch_first=True)
+        packed = pack_padded_sequence(embeddings, lengths, batch_first=True) # pack_padded_dequence use lengths(true length of each sequence) to ignore the padding elements in sequence
         hiddens, _ = self.lstm(packed)
         outputs = self.linear(hiddens[0])
         return outputs  # [1639, 9956]
+
+    def sample(self, features, states=None):
+        """Generate captions for given image features using greedy search."""
+        # The states are updated in each iteration, and they are used to keep track of the information from previous time steps.
+        # features [1, 256]
+        sampled_ids = []
+        inputs = features.unsqueeze(1)  # [1, 1, 256]
+        
+        for i in range(self.max_seg_length):
+            hiddens, states = self.lstm(inputs, states)          # hiddens: (batch_size, 1, hidden_size) [1,1,512]
+            outputs = self.linear(hiddens.squeeze(1))            # outputs:  (batch_size, vocab_size)   [1, 9956]
+            _, predicted = outputs.max(1)                        # predicted: (batch_size)  [1]
+            sampled_ids.append(predicted)
+            inputs = self.embed(predicted)                       # inputs: (batch_size, embed_size) [1, 256]
+            inputs = inputs.unsqueeze(1)                         # inputs: (batch_size, 1, embed_size) [1,1,256]
+        sampled_ids = torch.stack(sampled_ids, 1)                # sampled_ids: (batch_size, max_seq_length) [1,20]
+        return sampled_ids
 
 
 class EncoderDecoder(nn.Module):

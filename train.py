@@ -12,6 +12,7 @@ from models.models import EncoderDecoder
 from torch.nn.utils.rnn import pack_padded_sequence, pad_sequence
 from models.Bert import Word2Vector
 from utils.dataholder import DataHolder
+from utils.CustomLoss import BertDistancesLoss
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -68,7 +69,8 @@ def main(args):
     bert = Word2Vector()
     word2vec = DataHolder().word2vec
 
-    criterion = nn.CrossEntropyLoss()
+    # criterion = nn.CrossEntropyLoss()
+    bertLoss = BertDistancesLoss(vocab)
     # params = list(model.parameters())
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
 
@@ -79,9 +81,10 @@ def main(args):
             SG_data =  getSGData(SGs,bert,word2vec)
             images = images.to(device)
             captions = captions.to(device)
-            targets = pack_padded_sequence(captions, lengths, batch_first=True)[0]
+            targets = pack_padded_sequence(captions, lengths, batch_first=True)  # with [0] to get the concatenated and padded-removed all of the word in captions.
             outputs =  model(SG_data, images, captions, lengths)
-            loss = criterion(outputs, targets)
+            # loss = criterion(outputs, targets[0])
+            loss = bertLoss.loss(outputs, targets, lengths)
             model.zero_grad()
             loss.backward()
             optimizer.step()
