@@ -6,7 +6,7 @@ import os
 import pickle
 from utils.dataloader import getData
 from torchvision import transforms
-from utils.build_vocab import Vocabulary # import this, so you can load vocab.pkl file
+from utils.build_vocab import Vocabulary # import this, Necessary for load vocab.pkl file
 from utils.sg_dataloader import getSGData
 from models.models import EncoderDecoder
 from torch.nn.utils.rnn import pack_padded_sequence, pad_sequence
