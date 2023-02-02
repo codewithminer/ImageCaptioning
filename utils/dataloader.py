@@ -39,10 +39,13 @@ class CocoDataset(data.Dataset):
         """Return annotations IDs that have generated scene graph"""
         sg_image_ids = list(self.sg.keys()) # ['coco2014_000123.jpg',...]
         anns_ids = []
+        counter = 0
         for id in ids:
             img_id = self.coco.anns[id]['image_id'] # 123
             if  self.coco.loadImgs(img_id)[0]['file_name'] in sg_image_ids:
                 anns_ids.append(id)
+                counter += 1
+        print(counter)
         return anns_ids
 
     def __getitem__(self,index):
