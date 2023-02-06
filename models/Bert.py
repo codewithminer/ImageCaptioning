@@ -1,7 +1,7 @@
 from transformers import BertTokenizer, BertModel
 import torch
 
-class Word2Vector:
+class BertModel:
     def __init__(self):
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
         self.model = BertModel.from_pretrained('bert-base-uncased')

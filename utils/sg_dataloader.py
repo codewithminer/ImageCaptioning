@@ -1,4 +1,4 @@
-from models.Bert import Word2Vector
+from models.Bert import BertModel
 import torch
 from torch_geometric.data import Data
 

@@ -62,13 +62,15 @@ class BertDistancesLoss(nn.Module):
         tokens['input_ids'] = torch.stack(tokens['input_ids'])
         tokens['attention_mask'] = torch.stack(tokens['attention_mask'])
         outputs = self.model(**tokens)
+        # The general goal of computing the mean-pooled embeddings is to reduce the dimensions of the embeddings from the output of the BERT model, 
+        # which can have a high dimensionality, to a lower-dimensional representation that can be used for comparison or further processing.
         embeddings = outputs.last_hidden_state
         attention_mask = tokens['attention_mask']
         mask = attention_mask.unsqueeze(-1).expand(embeddings.size()).float()
         masked_embeddings = embeddings * mask
         summed = torch.sum(masked_embeddings, 1)
-        summed_mask = torch.clamp(mask.sum(1), min=1e-9)
-        mean_pooled = summed / summed_mask
+        summed_mask = torch.clamp(mask.sum(1), min=1e-9)  # torch.clamp ensures that summed_mask is always greater than zero, avoiding any division by zero errors.
+        mean_pooled = summed / summed_mask 
         # convert from PyTorch tensor to numpy array
         mean_pooled = mean_pooled.detach().numpy()
         # calculate
@@ -80,3 +82,69 @@ class BertDistancesLoss(nn.Module):
             Difference = torch.from_numpy(Difference).to('cuda')
             loss = torch.cat((loss, Difference), dim=0)
         return torch.mean(loss)
+
+
+# import torch
+
+# def evaluate_model_on_validation_set(model, validation_data, criterion):
+#     model.eval()
+#     with torch.no_grad():
+#         val_loss = 0
+#         for images, captions, lengths, SGs in validation_data:
+#             SG_data = getSGData(SGs, bert, word2vec)
+#             images = images.to(device)
+#             captions = captions.to(device)
+#             targets = pack_padded_sequence(captions, lengths, batch_first=True)
+#             outputs = model(SG_data, images, captions, lengths)
+#             loss = criterion(outputs, targets, lengths)
+#             val_loss += loss.item()
+#         val_loss /= len(validation_data)
+#     return val_loss
+
+#---------------
+# import torch
+
+# def evaluate_model_on_validation_set(model, validation_dataloader, criterion):
+#     """
+#     Evaluates the model on a validation set, using a specified loss criterion.
+
+#     Arguments:
+#         model: A PyTorch model
+#         validation_dataloader: A PyTorch DataLoader for the validation set
+#         criterion: A PyTorch loss criterion
+    
+#     Returns:
+#         avg_loss: Average loss over the validation set
+#         avg_accuracy: Average accuracy over the validation set
+#     """
+#     # Set model to evaluation mode
+#     model.eval()
+
+#     # Keep track of loss and accuracy
+#     total_loss = 0
+#     total_correct = 0
+#     total_samples = 0
+
+#     # Disable gradient computation
+#     with torch.no_grad():
+#         for inputs, labels in validation_dataloader:
+#             # Move inputs and labels to the GPU if available
+#             inputs = inputs.to(device)
+#             labels = labels.to(device)
+
+#             # Forward pass
+#             outputs = model(inputs)
+
+#             # Compute loss
+#             loss = criterion(outputs, labels)
+#             total_loss += loss.item() * inputs.size(0)
+
+#             # Compute accuracy
+#             _, preds = torch.max(outputs, 1)
+#             total_correct += (preds == labels).sum().item()
+#             total_samples += inputs.size(0)
+
+#     avg_loss = total_loss / total_samples
+#     avg_accuracy = total_correct / total_samples
+    
+#     return avg_loss, avg_accuracy

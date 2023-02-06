@@ -136,7 +136,7 @@ def main(args):
     model.load_state_dict(ckpt['model'])
     model.eval()
     
-    dataset_path = 'datasets/images/resized2014'
+    dataset_path = 'datasets/images/val_resized2014'
     IMAGE_PATHS = []
     #for folder_name in os.listdir(dataset_path):
     #    for filename in glob.iglob(os.path.join(dataset_path, folder_name, '*.jpg'), recursive=True):
@@ -280,7 +280,7 @@ def main(args):
                     graph_dict['node_bboxes'] = objs_bbox_reg
                     graph_dict['edge_labels'] = preds
                     graph_dict['edges'] = rels
-                    scene_graphs[img_path.replace('datasets/images/train2014/','')] = graph_dict
+                    scene_graphs[img_path.replace('datasets/images/val_resized2014\\','')] = graph_dict
             else:
                 img_obj_not_found.append(img_path)
         else:
@@ -292,8 +292,8 @@ def main(args):
         stdout.flush()
         print_index += 1
         if (print_index) % 1000 == 0:
-            save_obj(scene_graphs, dataset_path, 'Detected_Scene_Graphs')
-    save_obj(scene_graphs, dataset_path, 'Detected_Scene_Graphs')
+            save_obj(scene_graphs, dataset_path, 'Val_Detected_Scene_Graphs')
+    save_obj(scene_graphs, dataset_path, 'Val_Detected_Scene_Graphs')
     print('Images_Not_RGB:', len(img_not_rgb))
     print('Images_dont_have_Objects:', len(img_obj_not_found))
 if __name__ == '__main__':

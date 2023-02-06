@@ -2,8 +2,9 @@ import nltk
 import pickle
 import argparse
 from collections import Counter
+import sys
+sys.path.append("./")
 from cocoapi.PythonAPI.pycocotools.coco import COCO
-
 
 class Vocabulary(object):
     def __init__(self):
@@ -67,7 +68,7 @@ if __name__ == '__main__':
     parser.add_argument('--caption_path', type=str, 
                         default='datasets/annotations/captions_train2014.json', 
                         help='path for train annotation file')
-    parser.add_argument('--vocab_path', type=str, default='./datasets/vocab.pkl', 
+    parser.add_argument('--vocab_path', type=str, default='./datasets/vocab_new.pkl', 
                         help='path for saving vocabulary wrapper')
     parser.add_argument('--threshold', type=int, default=4, 
                         help='minimum word count threshold')
