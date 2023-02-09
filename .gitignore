@@ -1,6 +1,7 @@
 /ckpt
 /datasets
 /.venv
+/images
 
 RelTR/ckpt
 RelTR/datasets/images
