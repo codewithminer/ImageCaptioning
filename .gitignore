@@ -23,5 +23,5 @@ layer/__pycache__
 RelTR/__pychache__
 RelTR/datasets/__pycach__
 
-test.py/
-debug.log/
+test.py
+debug.log
