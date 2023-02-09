@@ -151,7 +151,7 @@ def main(args):
     img_obj_not_found = []
     img_not_rgb = []
     scene_graphs = dict()
-    for img_path in IMAGE_PATHS:
+    for img_path in IMAGE_PATHS[5000:]:
         im = Image.open(img_path)
       
         # mean-std normalize the input image (batch-size: 1)

@@ -42,8 +42,7 @@ class BertDistancesLoss(nn.Module):
                     break
         return caption_list, target_list    
 
-    # find distance between target_list and caption_list - mean on distances and return loss
-    # loss is a tensor with device=cuda:0
+    # find the semantic distance between target_list and caption_list
     def loss(self,captions, targets, lengths):
         caption_list, target_list = self.convertIdsToSentences(captions, targets, lengths)
 
@@ -64,13 +63,13 @@ class BertDistancesLoss(nn.Module):
         outputs = self.model(**tokens)
         # The general goal of computing the mean-pooled embeddings is to reduce the dimensions of the embeddings from the output of the BERT model, 
         # which can have a high dimensionality, to a lower-dimensional representation that can be used for comparison or further processing.
-        embeddings = outputs.last_hidden_state
+        embeddings = outputs.last_hidden_state  # [256, max_length, 768]
         attention_mask = tokens['attention_mask']
         mask = attention_mask.unsqueeze(-1).expand(embeddings.size()).float()
         masked_embeddings = embeddings * mask
         summed = torch.sum(masked_embeddings, 1)
         summed_mask = torch.clamp(mask.sum(1), min=1e-9)  # torch.clamp ensures that summed_mask is always greater than zero, avoiding any division by zero errors.
-        mean_pooled = summed / summed_mask 
+        mean_pooled = summed / summed_mask # [256, 768]
         # convert from PyTorch tensor to numpy array
         mean_pooled = mean_pooled.detach().numpy()
         # calculate

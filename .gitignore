@@ -22,3 +22,5 @@ models/__pycache__
 layer/__pycache__
 RelTR/__pychache__
 RelTR/datasets/__pycach__
+
+debug.log

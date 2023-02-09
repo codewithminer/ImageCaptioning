@@ -12,7 +12,7 @@ from utils.sg_dataloader import getSGData
 from utils.dataholder import DataHolder
 from utils.CustomLoss import BertDistancesLoss
 from models.models import EncoderDecoder
-from models.Bert import BertModel
+from models.Bert import Bert
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -38,9 +38,9 @@ def main(args):
         args.image_dir, args.caption_path, args.sg_path,
         vocab, transform, args.batch_size, shuffle=True, num_workers=args.num_workers)
 
-    validation_data = getData(
-    args.val_image_dir, args.val_caption_path, args.val_sg_path,
-    vocab, transform, args.batch_size, shuffle=True, num_workers=args.num_workers)
+    # validation_data = getData(
+    # args.val_image_dir, args.val_caption_path, args.val_sg_path,
+    # vocab, transform, args.batch_size, shuffle=True, num_workers=args.num_workers)
 
 
     gcn_in_channels = 768
@@ -70,18 +70,18 @@ def main(args):
                 encoder_lstm_embed_size, encoder_lstm_hidden_size, encoder_lstm_num_layers,
                 decoder_lstm_embed_size, decoder_lstm_hidden_size, decoder_lstm_vocab_size, decoder_lstm_num_layers, max_seq_length
             ).to(device)
-    bert = BertModel()
+    bert = Bert()
     word2vec = DataHolder().word2vec
 
-    # criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss()
     # params = list(model.parameters())
-    bertLoss = BertDistancesLoss(vocab)
+    # bertLoss = BertDistancesLoss(vocab)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
 
     total_step = len(data)
     for epoch in range(args.num_epochs):
-        if early_stopping_counter >= args.early_stopping_patience:
-            break
+        # if early_stopping_counter >= args.early_stopping_patience:
+        #     break
         # caption [128, 24] --> [1, 23, 17, ..., 2]
         for i,(images, captions, lengths, SGs) in enumerate(data):
             SG_data =  getSGData(SGs,bert,word2vec)
@@ -89,8 +89,8 @@ def main(args):
             captions = captions.to(device)
             outputs =  model(SG_data, images, captions, lengths)
             targets = pack_padded_sequence(captions, lengths, batch_first=True)  # with [0] to get the concatenated and padded-removed all of the word in captions.
-            # loss = criterion(outputs, targets[0])
-            loss = bertLoss.loss(outputs, targets, lengths)
+            loss = criterion(outputs, targets[0])
+            # loss = bertLoss.loss(outputs, targets, lengths)
             model.zero_grad()
             loss.backward()
             optimizer.step()

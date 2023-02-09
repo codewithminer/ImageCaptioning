@@ -109,11 +109,14 @@ class EncoderDecoder(nn.Module):
         self.encoder_lstm = EncoderLSTM(encoder_lstm_embed_size, encoder_lstm_hidden_size, encoder_lstm_num_layers)
         self.decoder_lstm = DecoderLSTM(decoder_lstm_embed_size, decoder_lstm_hidden_size, decoder_lstm_vocab_size, decoder_lstm_num_layers, max_seq_length)
     
-    def forward(self, gcn_data, resnet_data, captions, lengths):
+    def forward(self, gcn_data, resnet_data, captions, lengths, training=True):
         x_gcn = self.gcn(gcn_data)
         x_resnet = self.resnet(resnet_data)
         x_concat = self.encoder_lstm(x_gcn, x_resnet)
-        predicate_caption = self.decoder_lstm(x_concat, captions, lengths)
-        return predicate_caption
+        if training:
+            predicate_caption = self.decoder_lstm(x_concat, captions, lengths)
+            return predicate_caption
+        else:
+            return x_concat
 
 
