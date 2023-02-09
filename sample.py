@@ -1,17 +1,13 @@
-import torch
-import matplotlib.pyplot as plt
-import numpy as np 
 import argparse
 import pickle 
-import os
+import numpy as np 
+import torch
 from torchvision import transforms 
-from utils.build_vocab import Vocabulary
+import matplotlib.pyplot as plt
 from PIL import Image
-from utils.dataloader import getData
 from utils.build_vocab import Vocabulary # import this, Necessary for load vocab.pkl file
 from utils.sg_dataloader import getSGData
 from utils.dataholder import DataHolder
-from utils.CustomLoss import BertDistancesLoss
 from models.models import EncoderDecoder
 from models.Bert import Bert
 from RelTR.scenegraph import SceneGraph
