@@ -33,21 +33,36 @@ git clone https://github.com/codewithminer/image-captioning.git
 ```bash
 pip install -r requirements.txt
 ```
-3. Download the pre-trained models and put them in the ckpt folder.
-- model.pth
-- RelTR.pth
+3. Dataset
+We trained the model on the MS-COCO dataset, which contains over 80K images and their corresponding captions. if you want, you can use another dataset.
+- Download the [MS-COCO train2014](http://images.cocodataset.org/zips/train2014.zip) dataset and extract it in the dataset/images/ folder.
+- Download the [MS-COCO annotations](http://images.cocodataset.org/annotations/annotations_trainval2014.zip) dataset and extract it in the dataset/annotations/ folder.
 
-4. Run the following command to train the model:
+4. Preprocessing
+- generate a vocabulary of captions:
+```bash
+ python build_vocab
+```
+-  resize images to feed neural networks:
+```bash
+ python resize_image.py
+```
+- generate scene graph dataset to feed GCN (You must first download the pretrained RelTR model from this [link](https://github.com/yrcong/RelTR) and put it in the ckpt folder):
+```bash
+ python inference.py
+```
+
+5. Run the following command to train the model:
 ```bash
 python train.py
 ```
-5. Once the training is complete, you can use the following command to generate captions for new images:
+
+If you do not want to train the model from scratch, you can Download [model.pth](URL) and put it in the ckpt folder.
+
+6. Once the training is complete, you can use the following command to generate captions for new images:
 ```bash
 python sample.py --img_path <path_to_image>
 ```
-
-## Dataset
-The model is trained on the MS-COCO dataset, which contains over 80K images and their corresponding captions.
 
 ## Evaluation
 The performance of the model is evaluated using the BLEU score, which measures the similarity between the generated captions and the ground truth captions. A higher BLEU score indicates better performance.
