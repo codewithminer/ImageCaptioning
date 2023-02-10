@@ -33,13 +33,14 @@ git clone https://github.com/codewithminer/image-captioning.git
 ```bash
 pip install -r requirements.txt
 ```
-3. Dataset
+
+3. Dataset:
 We trained the model on the MS-COCO dataset, which contains over 80K images and their corresponding captions. if you want, you can use another dataset.
 - Download the [MS-COCO train2014](http://images.cocodataset.org/zips/train2014.zip) dataset and extract it in the dataset/images/ folder.
 - Download the [MS-COCO annotations](http://images.cocodataset.org/annotations/annotations_trainval2014.zip) dataset and extract it in the dataset/annotations/ folder.
 
-4. Preprocessing
-- generate a vocabulary of captions:
+4. Preprocessing:
+- generate a vocabulary of captions (If you do not want to build the vocabulary from scratch, you can Download vocab.pkl from this [link](URL) and put it in the dataset folder.):
 ```bash
  python build_vocab
 ```
@@ -56,16 +57,12 @@ We trained the model on the MS-COCO dataset, which contains over 80K images and 
 ```bash
 python train.py
 ```
-
 If you do not want to train the model from scratch, you can Download [model.pth](URL) and put it in the ckpt folder.
 
 6. Once the training is complete, you can use the following command to generate captions for new images:
 ```bash
 python sample.py --img_path <path_to_image>
 ```
-
-## Evaluation
-The performance of the model is evaluated using the BLEU score, which measures the similarity between the generated captions and the ground truth captions. A higher BLEU score indicates better performance.
 
 ## Conclusion
 The project demonstrates the effectiveness of using a combination of scene graph features and visual features for image captioning. Further improvements can be made by fine-tuning the hyperparameters, training on a larger dataset, or using more advanced techniques like attention mechanisms.
