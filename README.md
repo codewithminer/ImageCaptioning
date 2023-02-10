@@ -59,9 +59,9 @@ python train.py
 ```
 If you do not want to train the model from scratch, you can Download [model.pth](https://drive.google.com/file/d/1TLhe4QcaxvznmVyzA8msiug2Bq9-eAqd/view?usp=share_link) and put it in the ckpt folder.
 
-6. Once the training is complete, you can use the following command to generate captions for new images:
+6. Once the training is complete, you can use the following command to generate captions for new images you have in the images folder:
 ```bash
-python sample.py --img_path <path_to_image>
+python sample.py
 ```
 
 here is tree structure:
@@ -77,6 +77,7 @@ here is tree structure:
 ├   ├── SG
 ├       ├── Detected_Scene_Graph.json
 ├   ├── vocab.pkl
+├── images
 
 ```
 
