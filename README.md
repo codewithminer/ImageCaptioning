@@ -40,7 +40,7 @@ We trained the model on the MS-COCO dataset, which contains over 80K images and 
 - Download the [MS-COCO annotations](http://images.cocodataset.org/annotations/annotations_trainval2014.zip) dataset and extract it in the dataset/annotations/ folder.
 
 4. Preprocessing:
-- generate a vocabulary of captions (If you do not want to build the vocabulary from scratch, you can Download vocab.pkl from this [link](URL) and put it in the dataset folder.):
+- generate a vocabulary of captions (If you do not want to build the vocabulary from scratch, you can Download vocab.pkl from this [link](https://github.com/yrcong/RelTR) and put it in the dataset folder.):
 ```bash
  python build_vocab
 ```
