@@ -121,7 +121,7 @@ def getData(img_dir, ann_file, sg,  vocab, transform, batch_size, shuffle, num_w
 
     data_loader = torch.utils.data.DataLoader(
         dataset=coco,
-        batch_size=batch_size,
+        batch_size=64,
         shuffle=shuffle,
         num_workers=num_workers,
         collate_fn=collate_fn

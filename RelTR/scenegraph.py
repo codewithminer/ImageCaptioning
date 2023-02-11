@@ -139,7 +139,7 @@ def main(args, img):
     model.eval()
     
     img_path = img
-    
+
     all_rels = dict()
     img_obj_not_found = []
     img_not_rgb = []
@@ -271,7 +271,7 @@ def main(args, img):
                 graph_dict['node_bboxes'] = objs_bbox_reg
                 graph_dict['edge_labels'] = preds
                 graph_dict['edges'] = rels
-                scene_graphs[img_path.replace('images\\','')] = graph_dict
+                scene_graphs[img_path] = graph_dict
                 # print(scene_graphs)
     return scene_graphs
 

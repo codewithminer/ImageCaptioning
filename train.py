@@ -73,9 +73,9 @@ def main(args):
     bert = Bert()
     word2vec = DataHolder().word2vec
 
-    criterion = nn.CrossEntropyLoss()
+    # criterion = nn.CrossEntropyLoss()
     # params = list(model.parameters())
-    # bertLoss = BertDistancesLoss(vocab)
+    bertLoss = BertDistancesLoss(vocab)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
 
     total_step = len(data)
@@ -89,8 +89,8 @@ def main(args):
             captions = captions.to(device)
             outputs =  model(SG_data, images, captions, lengths)
             targets = pack_padded_sequence(captions, lengths, batch_first=True)  # with [0] to get the concatenated and padded-removed all of the word in captions.
-            loss = criterion(outputs, targets[0])
-            # loss = bertLoss.loss(outputs, targets, lengths)
+            # loss = criterion(outputs, targets[0])
+            loss = bertLoss.loss(outputs, targets, lengths)
             model.zero_grad()
             loss.backward()
             optimizer.step()
@@ -98,12 +98,12 @@ def main(args):
             # Print log info
             if i % args.log_step == 0:
                 print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Perplexity: {:5.4f}'
-                      .format(epoch, args.num_epochs, i, total_step, loss.item(), np.exp(loss.item()))) 
+                      .format(epoch+1, args.num_epochs, i, total_step, loss.item(), np.exp(loss.item()))) 
                 
             # Save the model checkpoints
             if (i+1) % args.save_step == 0:
                 torch.save(model.state_dict(), os.path.join(
-                    args.model_path, 'encoder-decoder-{}-{}.pth'.format(epoch+1, i+1)))
+                    args.model_path, 'model-{}-{}.pth'.format(epoch+1, i+1)))
 
 
             # evaluate the model on the validation set and save the best model weights

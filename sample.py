@@ -1,3 +1,4 @@
+import os
 import argparse
 import pickle 
 import numpy as np 
@@ -64,45 +65,46 @@ def main(args):
     bert = Bert()
     word2vec = DataHolder().word2vec
 
-    # Prepare an image
-    img = 'images/COCO_val2014_000000000692.jpg'
-    image = load_image(img, transform)
-    image_tensor = image.to(device)
-
     # Load the trained model parameters
     model.load_state_dict(torch.load(args.encoder_decoder_path))
 
-    
-    # Generate an caption from the image
-    sg = SceneGraph(img)
-    SG_data =  getSGData((sg[img],),bert,word2vec)
-    feature = model(SG_data,image_tensor,None, None, training=False)
-    sampled_ids = model.decoder_lstm.sample(feature)
-    sampled_ids = sampled_ids[0].cpu().numpy()          # (1, max_seq_length) -> (max_seq_length)
+    images = os.listdir('images')
+    for image in images:
+        image = os.path.join('images/', image)
+        img = load_image(image, transform)
 
-    # Convert word_ids to words
-    sampled_caption = []
-    for word_id in sampled_ids:
-        word = vocab.idx2word[word_id]
-        sampled_caption.append(word)
-        if word == '<end>':
-            break
-    sentence = ' '.join(sampled_caption)
-    
-    # Print out the image and the generated caption
-    print (sentence)
-    image = Image.open(img).convert('RGB')
-    plt.imshow(np.asarray(image))
+        # Prepare an image
+        # img = 'images/COCO_val2014_000000000328.jpg'
+        # image = load_image(img, transform)
+        image_tensor = img.to(device)
+        
+        # Generate an caption from the image
+        sg = SceneGraph(image)
+        if sg:
+            SG_data =  getSGData((sg[image],),bert,word2vec)
+            feature = model(SG_data,image_tensor,None, None, training=False)
+            sampled_ids = model.decoder_lstm.sample(feature)
+            sampled_ids = sampled_ids[0].cpu().numpy()          # (1, max_seq_length) -> (max_seq_length)
+
+            # Convert word_ids to words
+            sampled_caption = []
+            for word_id in sampled_ids:
+                word = vocab.idx2word[word_id]
+                sampled_caption.append(word)
+                if word == '<end>':
+                    break
+            sentence = ' '.join(sampled_caption)
+            print (f"{sentence}[{image}]")
+        else:
+            print("Image no have SceneGraph")
+    # image = Image.open(img).convert('RGB')
+    # plt.imshow(np.asarray(image))
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--image', type=str, required=False, help='input image for generating caption')
     parser.add_argument('--encoder_decoder_path', type=str, default='ckpt/encoder-decoder-5-3000.pth', help='path for trained model')
     parser.add_argument('--vocab_path', type=str, default='datasets/vocab.pkl', help='path for vocabulary wrapper')
-    
-    # Model parameters (should be same as paramters in train.py)
-    parser.add_argument('--embed_size', type=int , default=256, help='dimension of word embedding vectors')
-    parser.add_argument('--hidden_size', type=int , default=512, help='dimension of lstm hidden states')
-    parser.add_argument('--num_layers', type=int , default=1, help='number of layers in lstm')
+
     args = parser.parse_args()
     main(args)

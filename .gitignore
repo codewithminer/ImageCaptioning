@@ -1,7 +1,7 @@
 /ckpt
 /datasets
 /.venv
-/images
+
 
 RelTR/ckpt
 RelTR/datasets/images
@@ -26,3 +26,5 @@ RelTR/datasets/__pycach__
 
 test.py
 debug.log
+
+#git rm -rf --cached .
