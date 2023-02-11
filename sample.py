@@ -72,10 +72,6 @@ def main(args):
     for image in images:
         image = os.path.join('images/', image)
         img = load_image(image, transform)
-
-        # Prepare an image
-        # img = 'images/COCO_val2014_000000000328.jpg'
-        # image = load_image(img, transform)
         image_tensor = img.to(device)
         
         # Generate an caption from the image
@@ -95,10 +91,10 @@ def main(args):
                     break
             sentence = ' '.join(sampled_caption)
             print (f"{sentence}[{image}]")
+            # image = Image.open(img).convert('RGB')
+            # plt.imshow(np.asarray(image))
         else:
             print("Image no have SceneGraph")
-    # image = Image.open(img).convert('RGB')
-    # plt.imshow(np.asarray(image))
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
