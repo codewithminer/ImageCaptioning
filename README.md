@@ -64,7 +64,7 @@ If you do not want to train the model from scratch, you can Download [model.pth]
 python sample.py
 ```
 
-here is tree structure:
+Tree structure of folders:
 ```bash
 ├── ckpt
 ├   ├── encoder-decoder.pth
