@@ -5,10 +5,10 @@ This project aims to generate captions for given images using a combination of s
 - Python 3.7
 - PyTorch
 - Torchvision
-- torch_geometric
+- Torch_Geometric
 - Matplotlib
 - Numpy
-- transformers
+- Transformers
 
 ## Scene Graph Generation
 1. Relational Transformer (RelTR) is used to generate the scene graph of the image.
@@ -64,7 +64,7 @@ If you do not want to train the model from scratch, you can Download [model.pth]
 python sample.py
 ```
 
-here is tree structure:
+Tree structure of folders:
 ```bash
 ├── ckpt
 ├   ├── encoder-decoder.pth
