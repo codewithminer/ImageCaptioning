@@ -74,7 +74,7 @@ class DecoderLSTM(nn.Module):
         # features [128, 256]   features.unsqueeze(1)-> [128, 1, 256]
         embeddings = self.embed(captions)   # [128, 28, 256]
         embeddings = torch.cat((features.unsqueeze(1), embeddings), 1) # [128, 29, 256]
-        packed = pack_padded_sequence(embeddings, lengths, batch_first=True) # pack_padded_dequence use lengths(true length of each sequence) to ignore the padding elements in sequence
+        packed = pack_padded_sequence(embeddings, lengths, batch_first=True) # pack_padded_sequence provides a way to efficiently process padded sequences in a deep learning model by ignoring the padding elements, without actually removing them.
         hiddens, _ = self.lstm(packed)
         outputs = self.linear(hiddens[0])
         return outputs  # [1639, 9956]
