@@ -1,6 +1,8 @@
 # Image Captioning
 This project aims to generate captions for given images using a combination of scene graph features and visual features of the images. The model is built using Graph Convolutional Network (GCN), Residual Network (ResNet), and two Long Short-Term Memory (LSTM) networks.
 
+![architecture](https://github.com/codewithminer/ImageCaptioning/blob/master/architecture.jpg)
+
 ## Prerequisites
 - Python 3.7
 - PyTorch
@@ -80,6 +82,8 @@ Tree structure of folders:
 ├── images
 
 ```
+## sample
+![sample](https://github.com/codewithminer/ImageCaptioning/blob/master/sample.jpg)
 
 ## Conclusion
 The project demonstrates the effectiveness of using a combination of scene graph features and visual features for image captioning. Further improvements can be made by fine-tuning the hyperparameters, training on a larger dataset, or using more advanced techniques like attention mechanisms.
