@@ -26,6 +26,11 @@ This project aims to generate captions for given images using a combination of s
 ## Caption Generation
 The second LSTM network uses the combined features and vocabulary to generate the final caption for the image.
 
+## My Colab Notebook
+This repository contains a Jupyter notebook for my project. To view the notebook, click on the "Open in Colab" badge below.
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1dE75DLUYsQJALgmpd-aDAD-RSTuFdx90?usp=sharing)
+
+
 ## Getting Started
 1. Clone the repository:
 ```bash
