@@ -26,5 +26,8 @@ RelTR/datasets/__pycach__
 
 test.py
 debug.log
+results/
+pycocoevalcap/*
+
 
 #git rm -rf --cached .

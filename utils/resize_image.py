@@ -32,11 +32,11 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--image_dir', type=str, default='./datasets/images/val2014/',
+    parser.add_argument('--image_dir', type=str, default='./datasets/images/test2014/',
                         help='directory for train images')
-    parser.add_argument('--output_dir', type=str, default='./datasets/images/val_resized2014/',
+    parser.add_argument('--output_dir', type=str, default='./datasets/images/test_resized_2014/',
                         help='directory for saving resized images')
-    parser.add_argument('--image_size', type=int, default=256,
+    parser.add_argument('--image_size', type=int, default=224,
                         help='size for image after processing')
     args = parser.parse_args()
     main(args)

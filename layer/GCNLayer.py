@@ -86,7 +86,7 @@ class GraphPooling(nn.Module):
         super(GraphPooling, self).__init__()
         self.pooling_type = pooling_type
 
-    def forward(self, x, edge_index, batch):
+    def forward(self, x, batch):
         if self.pooling_type == 'mean':
             x = global_mean_pool(x, batch)
         elif self.pooling_type == 'max':

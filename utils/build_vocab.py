@@ -54,8 +54,45 @@ def build_vocab(json, threshold):
         vocab.add_word(word)
     return vocab
 
+class GraphVocabulary(object):
+    def __init__(self):
+        self.word2idx = {}
+        self.idx2word = {}
+        self.idx = 0
+    
+    def add_word(self, word):
+        if not word in self.word2idx:
+            self.word2idx[word] = self.idx
+            self.idx2word[self.idx] = word
+            self.idx += 1
+
+    def __call__(self,word):
+        if not word in self.word2idx:
+            return self.word2idx['<unk>']
+        return self.word2idx[word]
+
+    def __len__(self):
+        return len(self.word2idx)        
+
+def build_vocab_graph(file):
+    with open(file, 'r') as f:
+        lines = f.read()
+    words = lines.split('\n')
+    vg_vocab = GraphVocabulary()
+    vg_vocab.add_word('<pad>')
+    vg_vocab.add_word('<unk>')
+    for i, word in enumerate(words):
+        vg_vocab.add_word(word)
+    return vg_vocab
+
 def main(args):
-    vocab = build_vocab(json=args.caption_path, threshold=args.threshold)
+    # vocab = build_vocab(json=args.caption_path, threshold=args.threshold)
+    # vocab_path = args.vocab_path
+    # with open(vocab_path, 'wb') as f:
+    #     pickle.dump(vocab, f)   # <dump> for serialization(convert to byte stream) and <load> for de-serialization
+    # print("Total vocabulary size: {}".format(len(vocab)))
+    # print("Saved the vocabulary wrapper to '{}'".format(vocab_path))
+    vocab = build_vocab_graph('utils/vocab_graph.txt')
     vocab_path = args.vocab_path
     with open(vocab_path, 'wb') as f:
         pickle.dump(vocab, f)   # <dump> for serialization(convert to byte stream) and <load> for de-serialization
@@ -68,7 +105,7 @@ if __name__ == '__main__':
     parser.add_argument('--caption_path', type=str, 
                         default='datasets/annotations/captions_train2014.json', 
                         help='path for train annotation file')
-    parser.add_argument('--vocab_path', type=str, default='./datasets/vocab_new.pkl', 
+    parser.add_argument('--vocab_path', type=str, default='./datasets/vocab_graph.pkl', 
                         help='path for saving vocabulary wrapper')
     parser.add_argument('--threshold', type=int, default=4, 
                         help='minimum word count threshold')

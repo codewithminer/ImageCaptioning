@@ -11,7 +11,7 @@ from utils.build_vocab import Vocabulary
 from cocoapi.PythonAPI.pycocotools.coco import COCO
 
 class CocoDataset(data.Dataset):
-    def __init__(self, img_dir, ann_file, sg, vocab, transform=None):
+    def __init__(self, img_dir, ann_file, sg, vocab, training=True, transform=None):
         """Set the path for images, captions and vocabulary wrapper.
         
         Args:
@@ -25,9 +25,10 @@ class CocoDataset(data.Dataset):
         self.img_dir = img_dir
         self.coco = COCO(ann_file)
         self.sg = self.getSceneGraphJson(sg)
-        self.ids = self.getIdsHaveSG(list(self.coco.anns.keys()))
+        self.ids = self.getIdsHaveSG(list(self.coco.anns.keys())[:500])
         self.vocab = vocab
         self.transform = transform
+        self.training = training
     
     def getSceneGraphJson(self,sg):
         file = {}
@@ -39,9 +40,13 @@ class CocoDataset(data.Dataset):
         """Return annotations IDs that have generated scene graph"""
         sg_image_ids = list(self.sg.keys()) # ['coco2014_000123.jpg',...]
         anns_ids = []
+        # img_ids = []
         counter = 0
         for id in ids:
             img_id = self.coco.anns[id]['image_id'] # 123
+            # if img_id in img_ids:
+            #     continue
+            # img_ids.append(img_id)
             if  self.coco.loadImgs(img_id)[0]['file_name'] in sg_image_ids:
                 anns_ids.append(id)
                 counter += 1
@@ -70,8 +75,26 @@ class CocoDataset(data.Dataset):
         caption.append(vocab('<end>'))
         target = torch.Tensor(caption)
 
-        return image, target, sg[path]
-
+        # Get all captions for the image
+        if self.training:
+            return image, target, sg[path], None, None
+        
+        img_ann_ids = coco.getAnnIds(imgIds=img_id)
+        all_captions = []
+        captions_per_image = []
+        for ann_id in img_ann_ids:
+            caption = coco.anns[ann_id]['caption']
+            tokens = nltk.tokenize.word_tokenize(str(caption).lower())
+            caption = []
+            caption.append(vocab('<start>'))
+            caption.extend([vocab(token) for token in tokens])
+            caption.append(vocab('<end>'))
+            captions_per_image.append(caption)
+        # all_captions.append(captions_per_image)
+        return image, target, sg[path], captions_per_image, img_id
+        
+        
+    
     def __len__(self):
         return len(self.ids)
 
@@ -95,7 +118,7 @@ def collate_fn(data):
         """
     # Sort a data list by caption length (descending order).
     data.sort(key=lambda x: len(x[1]), reverse=True)
-    images, captions, sg = zip(*data)
+    images, captions, sg, all_caps, img_id = zip(*data)
 
     # Merge images (from tuple of 3D tensor to 4D tensor).
     images = torch.stack(images, 0)
@@ -106,22 +129,26 @@ def collate_fn(data):
     targets = torch.zeros(len(captions), max(lengths)).long()
     for i, cap in enumerate(captions):
         end = lengths[i]
-        targets[i, :end] = cap[:end]        
-    return images, targets, lengths, sg
+        targets[i, :end] = cap[:end]
 
-def getData(img_dir, ann_file, sg,  vocab, transform, batch_size, shuffle, num_workers):
+    if all_caps:
+        return images, targets, lengths, sg, all_caps, img_id
+    return images, targets, lengths, sg, None, None
+
+def getData(img_dir, ann_file, sg,  vocab, training, transform, batch_size, shuffle, num_workers):
     # Using COCOAPI for loading images and captions
     coco = CocoDataset(
         img_dir=img_dir,
         ann_file=ann_file,
         sg=sg,
         vocab=vocab,
+        training=training,
         transform=transform
     )
 
     data_loader = torch.utils.data.DataLoader(
         dataset=coco,
-        batch_size=64,
+        batch_size=batch_size,
         shuffle=shuffle,
         num_workers=num_workers,
         collate_fn=collate_fn

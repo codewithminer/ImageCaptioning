@@ -145,6 +145,7 @@ def main(args, img):
     img_not_rgb = []
     scene_graphs = dict()
     im = Image.open(img_path)
+
     # mean-std normalize the input image (batch-size: 1)
     if im.mode == 'RGB':
         img = transform(im).unsqueeze(0)

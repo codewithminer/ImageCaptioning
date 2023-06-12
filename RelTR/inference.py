@@ -13,7 +13,6 @@ from sys import stdout
 import pickle
 from shapely.geometry import Polygon
 
-
 def save_obj(obj, file_path, file_name):
     with open(file_path + '/' + file_name + '.pkl', 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
@@ -131,14 +130,17 @@ def main(args):
                 'painted on', 'parked on', 'part of', 'playing', 'riding', 'says', 'sitting on', 'standing on',
                 'to', 'under', 'using', 'walking in', 'walking on', 'watching', 'wearing', 'wears', 'with']
 
+ 
     model = build_model(args)[0]
     ckpt = torch.load(args.resume)
     model.load_state_dict(ckpt['model'])
     model.eval()
     
-    dataset_path = 'datasets/images/val_resized2014'
+    dataset_path = 'datasets/images/val_resized_2014'
+    # for ind,item in enumerate(new_images):
+    #     new_images[ind] = "datasets/images/val_resized_2014/"+item
     IMAGE_PATHS = []
-    #for folder_name in os.listdir(dataset_path):
+    # for folder_name in os.listdir(dataset_path):
     #    for filename in glob.iglob(os.path.join(dataset_path, folder_name, '*.jpg'), recursive=True):
     #        IMAGE_PATHS.append(filename)
     
@@ -151,7 +153,7 @@ def main(args):
     img_obj_not_found = []
     img_not_rgb = []
     scene_graphs = dict()
-    for img_path in IMAGE_PATHS[5000:]:
+    for img_path in IMAGE_PATHS:
         im = Image.open(img_path)
       
         # mean-std normalize the input image (batch-size: 1)
@@ -280,7 +282,7 @@ def main(args):
                     graph_dict['node_bboxes'] = objs_bbox_reg
                     graph_dict['edge_labels'] = preds
                     graph_dict['edges'] = rels
-                    scene_graphs[img_path.replace('datasets/images/val_resized2014\\','')] = graph_dict
+                    scene_graphs[img_path.replace('datasets/images/val_resized_2014\\','')] = graph_dict
             else:
                 img_obj_not_found.append(img_path)
         else:
