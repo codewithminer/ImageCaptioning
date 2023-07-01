@@ -6,7 +6,7 @@ import torch
 from torchvision import transforms
 from utils.dataloader import getData
 from utils.build_vocab import Vocabulary, GraphVocabulary # import this, Necessary for load vocab.pkl file
-from models.models import EncoderDecoder
+from models.model2 import EncoderDecoder
 import torch.nn.functional as F
 from utils.scene_graph_extractor import extractSceneGraphData
 

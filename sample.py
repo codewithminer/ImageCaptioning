@@ -8,7 +8,7 @@ from torchvision import transforms
 from PIL import Image
 from utils.build_vocab import Vocabulary, GraphVocabulary # import this, Necessary for load vocab.pkl file
 # from utils.scene_graph_extractor import getSGData
-from models.models import EncoderDecoder
+from models.model2 import EncoderDecoder
 from RelTR.scenegraph import SceneGraph
 from utils.tools import extractGeometricFeaturesForGCN, extractGeometricFeatureAsEdgeAttr
 from utils.scene_graph_extractor import extractSceneGraphData
@@ -73,7 +73,7 @@ def main(args):
     images = os.listdir('images')
     for image in images:
         image = os.path.join('images/', image)
-        # img2 = cv2.imread(image)
+        img2 = cv2.imread(image)
         img = load_image(image, transform)
         image_tensor = img.to(device)
         # Generate an caption from the image
@@ -81,8 +81,8 @@ def main(args):
         if sg:
             print(sg)
             SG_data = extractSceneGraphData((sg[image],), vocab_graph)
-            # batched_graph, feat = extractGeometricFeaturesForGCN(SG_data.bboxes, SG_data.edge_indexes)
-            # visualizeGeometricFeatures(img2, feat,SG_data.edge_indexes)
+            batched_graph, feat = extractGeometricFeaturesForGCN(SG_data.bboxes, SG_data.edge_indexes)
+            visualizeGeometricFeatures(img2, feat,SG_data.edge_indexes)
             # feature = model(SG_data, image_tensor,None, None, training=False)
             # sampled_ids = model.decoder_lstm.sample(feature)
             f1, f2, f3 = model(SG_data, image_tensor,None, None, training=False)

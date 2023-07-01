@@ -9,7 +9,7 @@ from torch.nn.utils.rnn import pack_padded_sequence, pad_sequence, pad_packed_se
 from utils.dataloader import getData
 from utils.build_vocab import Vocabulary, GraphVocabulary # import this, Necessary for load vocab.pkl file
 from utils.scene_graph_extractor import extractSceneGraphData
-from models.models import EncoderDecoder
+from models.model2 import EncoderDecoder
 from utils.tools import save_model
 from nltk.translate.bleu_score import corpus_bleu
 
