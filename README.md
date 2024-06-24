@@ -67,7 +67,7 @@ We trained the model on the MS-COCO dataset, which contains over 80K images and 
 ```bash
 python train.py
 ```
-If you do not want to train the model from scratch, you can Download [model.pth](https://drive.google.com/file/d/1TLhe4QcaxvznmVyzA8msiug2Bq9-eAqd/view?usp=share_link) and put it in the ckpt folder.  
+If you do not want to train the model from scratch, you can Download [model.pth](https://drive.google.com/file/d/1GU-Pv7ls4M-4GP-Kg8MICb1t_YSk0St0/view?usp=drive_link) and put it in the ckpt folder.  
 
 
 6. Once the training is complete, you can use the following command to generate captions for new images you have in the images folder:
