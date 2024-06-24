@@ -82,7 +82,7 @@ def main(args):
             print(sg)
             SG_data = extractSceneGraphData((sg[image],), vocab_graph)
             batched_graph, feat = extractGeometricFeaturesForGCN(SG_data.bboxes, SG_data.edge_indexes)
-            visualizeGeometricFeatures(img2, feat,SG_data.edge_indexes)
+            # visualizeGeometricFeatures(img2, feat,SG_data.edge_indexes)
             # feature = model(SG_data, image_tensor,None, None, training=False)
             # sampled_ids = model.decoder_lstm.sample(feature)
             f1, f2, f3 = model(SG_data, image_tensor,None, None, training=False)
