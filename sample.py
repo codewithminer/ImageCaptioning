@@ -123,7 +123,7 @@ def visualizeGeometricFeatures(image, features_list, edge_indexes_list):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--image', type=str, required=False, help='input image for generating caption')
-    parser.add_argument('--encoder_decoder_path', type=str, default='ckpt/SSRAT-T6-30.pth', help='path for trained model')
+    parser.add_argument('--encoder_decoder_path', type=str, default='ckpt/SSRAT-T6-8.pth', help='path for trained model')
     parser.add_argument('--vocab_path', type=str, default='datasets/vocab.pkl', help='path for vocabulary wrapper')
     parser.add_argument('--vocab_graph_path', type=str, default='datasets/vocab_graph.pkl', help='path for vocabulary wrapper')
 
